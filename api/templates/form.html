@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        document.addEventListener("DOMContentLoaded",function(){
+            let add_comment_btn = document.getElementById("add_comment")
+            let emoji_btn = document.getElementById("emoji_btn")
+            let comment_text=document.getElementById("comment_text")
+            let csrftoken = '{{ csrf_token }}';
+            console.log('csrf',csrftoken)
+            add_comment_btn.addEventListener("click",function(){
+                let text = comment_text.value
+                console.log("text",text)
+
+                fetch("/comment/", { 
+                    method:'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body:JSON.stringify({
+                        csrfmiddlewaretoken: csrftoken,
+                        text:text
+                     }) })
+                .then(response=>{
+                    console.log('response\n',response)
+                })
+                .catch(error=>{
+                    console.log('error\n',error)
+                })
+            })
+
+            emoji_btn.addEventListener("click",function(){
+                comment_text.value += String.fromCodePoint(0x1F31E)
+            })
+
+        })
+    </script>
+</head>
+<body>
+    <div style="margin: 50px;">
+        <button id="emoji_btn">&#127774;</button>
+        <textarea rows="3" cols="50" id="comment_text"></textarea>
+
+        <button id="add_comment"> Add Comment</button>
+    </div>
+</body>
+</html>
